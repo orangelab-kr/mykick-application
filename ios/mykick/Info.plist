@@ -21,7 +21,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>7</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>킥보드 잠금해제와 헬멧 잠금해제 통신할때에 사용합니다.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>킥보드 잠금해제와 헬멧 잠금해제 통신할때에 사용합니다.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -52,6 +56,8 @@
 	<key>CodePushDeploymentKey</key>
 	<string>TryDEU1EwDBTWd1plhgP0PBub2TNkTneMrQUJ</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
 </plist>
