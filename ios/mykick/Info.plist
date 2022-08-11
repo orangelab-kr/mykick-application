@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>ko</string>
 	<key>CFBundleDisplayName</key>
 	<string>마이킥</string>
 	<key>CFBundleExecutable</key>
@@ -49,6 +49,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CodePushDeploymentKey</key>
+	<string>TryDEU1EwDBTWd1plhgP0PBub2TNkTneMrQUJ</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
