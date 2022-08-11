@@ -1,4 +1,4 @@
-package com.mykick;
+package kr.hikick.mykick;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

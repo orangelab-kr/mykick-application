@@ -1,4 +1,4 @@
-package com.mykick.newarchitecture;
+package kr.hikick.mykick.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.mykick.BuildConfig;
-import com.mykick.newarchitecture.components.MainComponentsRegistry;
-import com.mykick.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import kr.hikick.mykick.BuildConfig;
+import kr.hikick.mykick.newarchitecture.components.MainComponentsRegistry;
+import kr.hikick.mykick.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

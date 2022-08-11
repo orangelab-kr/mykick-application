@@ -1,4 +1,4 @@
-package com.mykick;
+package kr.hikick.mykick;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,8 +9,9 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
-import com.mykick.newarchitecture.MainApplicationReactNativeHost;
+import kr.hikick.mykick.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
+import com.microsoft.codepush.react.CodePush;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -29,6 +30,11 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           return packages;
+        }
+
+        @Override
+        protected String getJSBundleFile() {
+          return CodePush.getJSBundleFile();
         }
 
         @Override
@@ -73,7 +79,7 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("com.mykick.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("kr.hikick.mykick.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);
