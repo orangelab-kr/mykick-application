@@ -6,6 +6,7 @@ import {Bar} from 'react-native-progress';
 import {WithLocalSvg} from 'react-native-svg';
 import styled from 'styled-components/native';
 import Logo from '../assets/logo.svg';
+import {CommonText} from '../components/CommonText';
 import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
 
@@ -114,7 +115,8 @@ const Container = styled(View)`
   align-items: flex-end;
 `;
 
-const Description = styled(Text)`
+const Description = styled(CommonText)`
+  color: #000;
   font-size: ${screenWidth / 21}px;
   font-weight: 700;
 `;
@@ -127,7 +129,8 @@ const ProgressContainer = styled(View)`
   color: #999;
 `;
 
-const ProgressMessage = styled(Text)`
+const ProgressMessage = styled(CommonText)`
+  color: #000;
   margin-top: 6px;
   text-align: center;
   color: #999;
