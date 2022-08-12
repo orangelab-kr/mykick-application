@@ -287,6 +287,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = Q49HBDY2NJ;
 				ENABLE_BITCODE = NO;
@@ -302,6 +304,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = kr.hikick.mykick;
 				PRODUCT_NAME = mykick;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
