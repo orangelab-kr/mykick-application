@@ -22,10 +22,14 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>7</string>
+	<key>NSCameraUsageDescription</key>
+	<string>킥보드 등록시 사용됩니다.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>킥보드 잠금해제와 헬멧 잠금해제 통신할때에 사용합니다.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>킥보드 잠금해제와 헬멧 잠금해제 통신할때에 사용합니다.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>킥보드 위치 저장을 위해 사용됩니다.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -57,6 +61,8 @@
 	<string>TryDEU1EwDBTWd1plhgP0PBub2TNkTneMrQUJ</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NMFClientId</key>
+	<string>38urtsu6oc</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

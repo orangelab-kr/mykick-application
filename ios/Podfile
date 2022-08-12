@@ -22,6 +22,9 @@ target 'mykick' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+    
+  # Enables Naver Map
+  pod 'NMapsMap', '3.14.1'
 
   post_install do |installer|
     react_native_post_install(installer)
