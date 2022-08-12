@@ -1,11 +1,12 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import {LogBox, SafeAreaView, StatusBar, Text} from 'react-native';
+import {LogBox, StatusBar} from 'react-native';
 import {NotifierWrapper} from 'react-native-notifier';
 import {ShowNotificationParams} from 'react-native-notifier/lib/typescript/types';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RecoilRoot} from 'recoil';
-// import {navigationRef} from './navigators/navigation';
-// import {RootNavigator} from './navigators/root';
+import {RootNavigator} from './navigators/root';
+import {navigationRef} from './tools/navigation';
 
 export const App: React.FC = () => {
   const notifierProps: ShowNotificationParams = {
@@ -21,16 +22,15 @@ export const App: React.FC = () => {
 
   return (
     <RecoilRoot>
+      <StatusBar barStyle="dark-content" />
       <NotifierWrapper {...notifierProps}>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView>
-          <Text>Hello World!</Text>
-        </SafeAreaView>
-        <NavigationContainer
-          // ref={navigationRef}
-          theme={{colors: {background: '#fff'}} as any}>
-          {/* <RootNavigator /> */}
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer
+            ref={navigationRef}
+            theme={{colors: {background: '#fff'}} as any}>
+            <RootNavigator />
+          </NavigationContainer>
+        </SafeAreaProvider>
       </NotifierWrapper>
     </RecoilRoot>
   );
