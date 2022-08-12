@@ -7,4 +7,5 @@ type SubNavigator<T extends ParamListBase> = {
 export type RootNavigatorRouteParams = {
   Splash: undefined;
   Start: undefined;
+  Rent: undefined | {path: string};
 };

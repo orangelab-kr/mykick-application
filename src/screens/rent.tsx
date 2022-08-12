@@ -1,0 +1,26 @@
+import {RouteProp, useRoute} from '@react-navigation/native';
+import React from 'react';
+import {SafeAreaView} from 'react-native';
+import {WebView, WebViewNavigation} from 'react-native-webview';
+import {RootNavigatorRouteParams} from '../models/navigation';
+import {navigationRef} from '../tools/navigation';
+
+export const Rent: React.FC = () => {
+  const {params} = useRoute<RouteProp<RootNavigatorRouteParams, 'Rent'>>();
+  const onNavigationStateChange = (state: WebViewNavigation) => {
+    if (!state.url.endsWith('/started')) return;
+    navigationRef.current?.navigate('Start');
+  };
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <WebView
+        source={{uri: `https://my.hikick.kr/${params?.path}`}}
+        onNavigationStateChange={onNavigationStateChange}
+        javascriptEnabled
+        startInLoadingState
+        scalesPageToFit
+      />
+    </SafeAreaView>
+  );
+};

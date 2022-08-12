@@ -4,9 +4,13 @@ import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 import styled from 'styled-components/native';
 import Logo from '../assets/logo.svg';
+import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
 
 export const Start: React.FC = () => {
+  const gotoRent = (path: string) => () =>
+    navigationRef.current?.navigate('Rent', {path});
+
   return (
     <SafeAreaView>
       <Container>
@@ -23,10 +27,10 @@ export const Start: React.FC = () => {
           <ButtonContainer>
             <ButtonText>리얼 마이킥 등록하기</ButtonText>
           </ButtonContainer>
-          <ButtonContainer transparent>
+          <ButtonContainer transparent onPress={gotoRent('started/pricing')}>
             <ButtonText transparent>장 · 단기 렌탈 신청하기</ButtonText>
           </ButtonContainer>
-          <TransparentContainer>
+          <TransparentContainer onPress={gotoRent('auth')}>
             <TransparentText>
               이미 <Text style={{fontWeight: '900'}}>마이킥</Text>을 가지고
               계신가요?
