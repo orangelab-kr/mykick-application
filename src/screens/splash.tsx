@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import CodePush, {DownloadProgress} from 'react-native-code-push';
 import {Bar} from 'react-native-progress';
 import {WithLocalSvg} from 'react-native-svg';

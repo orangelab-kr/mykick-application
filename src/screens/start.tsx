@@ -4,41 +4,42 @@ import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 import styled from 'styled-components/native';
 import Logo from '../assets/logo.svg';
+import {CommonText} from '../components/CommonText';
 import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
 
 export const Start: React.FC = () => {
+  const gotoRealmykick = () => navigationRef.current?.navigate('Control');
   const gotoRent = (path: string) => () =>
     navigationRef.current?.navigate('Rent', {path});
 
   return (
-    <SafeAreaView>
-      <Container>
-        <WithLocalSvg width="40%" height={40} asset={Logo} />
-        <Description>나만의 튼튼한 하이킥 킥보드</Description>
-        <Hashtag>#튼튼한 #킥보드 #마이킥</Hashtag>
-        <AnimationView
-          loop
-          autoPlay
-          resizeMode="contain"
-          source={require('../assets/lotties/64970-electric-scooter-baloon.json')}
-        />
-        <BottomContainer>
-          <ButtonContainer>
-            <ButtonText>리얼 마이킥 등록하기</ButtonText>
-          </ButtonContainer>
-          <ButtonContainer transparent onPress={gotoRent('started/pricing')}>
-            <ButtonText transparent>장 · 단기 렌탈 신청하기</ButtonText>
-          </ButtonContainer>
-          <TransparentContainer onPress={gotoRent('auth')}>
-            <TransparentText>
-              이미 <Text style={{fontWeight: '900'}}>마이킥</Text>을 가지고
-              계신가요?
-            </TransparentText>
-          </TransparentContainer>
-        </BottomContainer>
-      </Container>
-    </SafeAreaView>
+    <Container>
+      <SafeAreaView />
+      <WithLocalSvg width="40%" height={40} asset={Logo} />
+      <Description>나만의 튼튼한 하이킥 킥보드</Description>
+      <Hashtag>#튼튼한 #킥보드 #마이킥</Hashtag>
+      <AnimationView
+        loop
+        autoPlay
+        resizeMode="contain"
+        source={require('../assets/lotties/64970-electric-scooter-baloon.json')}
+      />
+      <BottomContainer>
+        <ButtonContainer onPress={gotoRealmykick}>
+          <ButtonText>리얼 마이킥 등록하기</ButtonText>
+        </ButtonContainer>
+        <ButtonContainer transparent onPress={gotoRent('started/pricing')}>
+          <ButtonText transparent>장 · 단기 렌탈 신청하기</ButtonText>
+        </ButtonContainer>
+        <TransparentContainer onPress={gotoRent('auth')}>
+          <TransparentText>
+            이미 <Text style={{fontWeight: '900'}}>마이킥</Text>을 가지고
+            계신가요?
+          </TransparentText>
+        </TransparentContainer>
+      </BottomContainer>
+    </Container>
   );
 };
 
@@ -49,14 +50,14 @@ const Container = styled(View)`
   width: 100%;
 `;
 
-const Description = styled(Text)`
+const Description = styled(CommonText)`
   margin: ${screenHeight * 0.002}px 0;
   font-size: ${screenWidth / 16}px;
   word-break: keep-all;
   font-weight: 600;
 `;
 
-const Hashtag = styled(Text)`
+const Hashtag = styled(CommonText)`
   font-weight: 500;
   font-size: ${screenWidth / 20}px;
   color: gray;
@@ -86,7 +87,7 @@ const ButtonContainer = styled(TouchableOpacity)<{transparent?: boolean}>`
   border-radius: 8px;
 `;
 
-const ButtonText = styled(Text)<{transparent?: boolean}>`
+const ButtonText = styled(CommonText)<{transparent?: boolean}>`
   font-weight: 800;
   font-size: ${screenWidth / 20}px;
   color: ${({transparent}) => (transparent ? '#3578f6' : '#fff')};
@@ -95,9 +96,9 @@ const ButtonText = styled(Text)<{transparent?: boolean}>`
 const TransparentContainer = styled(TouchableOpacity)`
   align-items: center;
   padding-top: ${screenHeight * 0.013}px;
-  padding-bottom: 0;
+  padding-bottom: ${screenHeight * 0.025}px;
 `;
 
-const TransparentText = styled(Text)`
+const TransparentText = styled(CommonText)`
   font-size: ${screenWidth / 22}px;
 `;
