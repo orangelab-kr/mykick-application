@@ -4,7 +4,7 @@ import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 import styled from 'styled-components/native';
 import Logo from '../assets/logo.svg';
-import {CommonText} from '../components/CommonText';
+import {CommonText} from '../components/Common/CommonText';
 import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
 

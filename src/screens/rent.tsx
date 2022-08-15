@@ -2,6 +2,7 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {WebView, WebViewNavigation} from 'react-native-webview';
+import {TopBar} from '../components/TopBar/TopBar';
 import {RootNavigatorRouteParams} from '../models/navigation';
 import {navigationRef} from '../tools/navigation';
 
@@ -14,6 +15,7 @@ export const Rent: React.FC = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
+      <TopBar />
       <WebView
         source={{uri: `https://my.hikick.kr/${params?.path}`}}
         onNavigationStateChange={onNavigationStateChange}
