@@ -1,13 +1,17 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, TouchableOpacityProps} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styled from 'styled-components/native';
 import {screenWidth} from '../../tools/screenSize';
 
-export const PowerButton: React.FC = () => {
+export interface PowerButtonProps extends TouchableOpacityProps {
+  color: string;
+}
+
+export const PowerButton: React.FC<PowerButtonProps> = ({color, ...props}) => {
   return (
-    <PowerButtonContainer>
-      <Icon name="power-settings-new" size={screenWidth / 9} color="#3578F6" />
+    <PowerButtonContainer {...props}>
+      <Icon name="power-settings-new" size={screenWidth / 9} color={color} />
     </PowerButtonContainer>
   );
 };
