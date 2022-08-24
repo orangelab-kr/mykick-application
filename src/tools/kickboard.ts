@@ -26,6 +26,7 @@ export const useKickboard = () => {
   const [light, setLight] = useState(false);
   const [batterySOC, setBatterySOC] = useState(100);
   const [batteryLock, setBatteryLock] = useState(false);
+  const [maxSpeed, setRawMaxSpeed] = useState(0);
   const [writer, setWriter] = useState<Characteristic>();
   const [reader, setReader] = useState<Characteristic>();
   const [device, setDevice] = useState<Device>();
@@ -175,15 +176,25 @@ export const useKickboard = () => {
     return batteryLock;
   };
 
-  const settingsRW = async (payload: number[]) => {
-    const settings = await request({
-      requestPayload: [0x61, 0x62, 0x35, ...payload],
-      responsePrefix: [0x61, 0x62, 0x35],
-      responseSize: 16,
-    });
-
-    console.log(settings);
+  const getMaxSpeed = async () => {
+    const maxSpeed = await settingsRW([0x00]).then(r => r[3]);
+    setRawMaxSpeed(maxSpeed);
+    return maxSpeed;
   };
+
+  const setMaxSpeed = async (speed: number) => {
+    const settings = await settingsRW([0x00]);
+    settings[3] = speed;
+    await settingsRW([0x05, ...settings]);
+    setRawMaxSpeed(speed);
+  };
+
+  const settingsRW = async (payload: number[]) =>
+    request({
+      requestPayload: [0x61, 0x62, 0x35, ...payload],
+      responsePrefix: [0x61, 0x62, 0x35, 0x05],
+      responseSize: 5,
+    });
 
   const getBatteryStatus = async () => {
     console.log(reader, writer);
@@ -191,7 +202,7 @@ export const useKickboard = () => {
       requestPayload: [0x61, 0x62, 0x28, 0x00],
       responsePrefix: [0x61, 0x62, 0x28, 0x0c],
       responseSize: 12,
-    }).then(([, , , batterySOC]) => batterySOC);
+    }).then(r => r[3]);
 
     setBatterySOC(batterySOC);
     console.log(batterySOC);
@@ -231,7 +242,7 @@ export const useKickboard = () => {
     await isPowerOn();
     await isLightOn();
     await isBatteryLocked();
-    console.log(await settingsRW([0x00]));
+    await getMaxSpeed();
   };
 
   useEffect(() => {
@@ -258,11 +269,13 @@ export const useKickboard = () => {
   return {
     credentials,
     setAuthkey,
+    setMaxSpeed,
     status,
     power,
     light,
     batteryLock,
     batterySOC,
+    maxSpeed,
     setPowerOn,
     switchPowerOn,
     setLightOn,

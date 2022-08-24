@@ -32,8 +32,6 @@ export const Control: React.FC = () => {
     kickboard.connect();
   }, [kickboard.credentials]);
 
-  console.log(kickboard.power);
-
   return (
     <SafeAreaView>
       <TopBar />
@@ -81,7 +79,11 @@ export const Control: React.FC = () => {
               }}
             />
           </CoreController>
-          <SpeedController />
+          <SpeedController
+            maxSpeed={kickboard.maxSpeed}
+            setMaxSpeed={kickboard.setMaxSpeed}
+            disabled={kickboard.status !== 'connected'}
+          />
         </StickyController>
       </Container>
     </SafeAreaView>

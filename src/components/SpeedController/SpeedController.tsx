@@ -5,14 +5,27 @@ import styled from 'styled-components/native';
 import {screenHeight, screenWidth} from '../../tools/screenSize';
 import {CommonText} from '../Common/CommonText';
 
-export const SpeedController: React.FC = () => {
+export interface SpeedControllerProps {
+  maxSpeed: number;
+  setMaxSpeed: (speed: number) => void;
+  disabled?: boolean;
+}
+
+export const SpeedController: React.FC<SpeedControllerProps> = ({
+  maxSpeed,
+  setMaxSpeed,
+  disabled,
+}) => {
   return (
     <SpeedContainer>
       <SpeedLabel>속도</SpeedLabel>
       <SpeedCenterContainer>
-        <SpeedCurrentText>25km/h</SpeedCurrentText>
+        <SpeedCurrentText>{maxSpeed}km/h</SpeedCurrentText>
         <Slider
+          disabled={disabled}
+          value={maxSpeed}
           style={{width: '100%', height: 45}}
+          onValueChange={setMaxSpeed}
           minimumValue={5}
           maximumValue={25}
           step={5}
