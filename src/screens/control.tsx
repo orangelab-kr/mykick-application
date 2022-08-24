@@ -56,7 +56,7 @@ export const Control: React.FC = () => {
               icon="pin-drop"
               label="경기도 화성시 동탄대로 10길"
             />
-            <BasicInfoUnit icon="bolt" label="96%" />
+            <BasicInfoUnit icon="bolt" label={`${kickboard.batterySOC}%`} />
           </BasicInfo>
           <CoreController>
             <SwitchController

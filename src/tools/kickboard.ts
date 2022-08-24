@@ -24,6 +24,7 @@ export interface KickboardCredentials {
 export const useKickboard = () => {
   const [power, setPower] = useState(false);
   const [light, setLight] = useState(false);
+  const [batterySOC, setBatterySOC] = useState(100);
   const [batteryLock, setBatteryLock] = useState(false);
   const [writer, setWriter] = useState<Characteristic>();
   const [reader, setReader] = useState<Characteristic>();
@@ -41,7 +42,7 @@ export const useKickboard = () => {
   };
 
   const connect = async () => {
-    if (!credentials) return;
+    if (!credentials || status === 'connected') return;
     setStatus('scanning');
     manager.startDeviceScan(
       [credentials.serviceId],
@@ -89,7 +90,6 @@ export const useKickboard = () => {
     responseSize: number;
   }): Promise<number[]> =>
     new Promise((resolve, reject) => {
-      console.log(reader, writer);
       if (!reader) throw Error('아직 연결되지 않았습니다.');
       const validate = (payload?: string | null) => {
         if (!payload) return;
@@ -175,15 +175,26 @@ export const useKickboard = () => {
     return batteryLock;
   };
 
-  const getBatteryStatus = async () => {
-    console.log(reader, writer);
-    const battery = await request({
-      requestPayload: [0x61, 0x62, 0x28, 0x00],
-      responsePrefix: [0x61, 0x62, 0x28],
+  const settingsRW = async (payload: number[]) => {
+    const settings = await request({
+      requestPayload: [0x61, 0x62, 0x35, ...payload],
+      responsePrefix: [0x61, 0x62, 0x35],
       responseSize: 16,
     });
 
-    console.log(battery);
+    console.log(settings);
+  };
+
+  const getBatteryStatus = async () => {
+    console.log(reader, writer);
+    const batterySOC = await request({
+      requestPayload: [0x61, 0x62, 0x28, 0x00],
+      responsePrefix: [0x61, 0x62, 0x28, 0x0c],
+      responseSize: 12,
+    }).then(([, , , batterySOC]) => batterySOC);
+
+    setBatterySOC(batterySOC);
+    console.log(batterySOC);
   };
 
   const pair = async () => {
@@ -216,9 +227,11 @@ export const useKickboard = () => {
   };
 
   const onInit = async () => {
-    console.log(await isPowerOn());
-    console.log(await isLightOn());
-    console.log(await isBatteryLocked());
+    await getBatteryStatus();
+    await isPowerOn();
+    await isLightOn();
+    await isBatteryLocked();
+    console.log(await settingsRW([0x00]));
   };
 
   useEffect(() => {
@@ -249,6 +262,7 @@ export const useKickboard = () => {
     power,
     light,
     batteryLock,
+    batterySOC,
     setPowerOn,
     switchPowerOn,
     setLightOn,
