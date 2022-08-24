@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
@@ -85,7 +86,8 @@ export const Splash: React.FC = () => {
     // }
 
     // if (user === null) return navigationRef.current?.navigate('Start');
-    navigationRef.current?.navigate('Start');
+    const authkey = await AsyncStorage.getItem('realmykick-authkey');
+    navigationRef.current?.navigate(authkey ? 'Control' : 'Start');
   };
 
   useEffect(() => {
