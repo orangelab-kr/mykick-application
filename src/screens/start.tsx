@@ -9,7 +9,7 @@ import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
 
 export const Start: React.FC = () => {
-  const gotoRealmykick = () => navigationRef.current?.navigate('Control');
+  const gotoRealmykick = () => navigationRef.current?.navigate('Register');
   const gotoRent = (path: string) => () =>
     navigationRef.current?.navigate('Rent', {path});
 
@@ -76,13 +76,17 @@ const BottomContainer = styled(View)`
   left: 0;
 `;
 
-const ButtonContainer = styled(TouchableOpacity)<{transparent?: boolean}>`
+const ButtonContainer = styled(TouchableOpacity)<{
+  color?: string;
+  transparent?: boolean;
+}>`
   width: 100%;
   align-items: center;
   margin: ${screenHeight * 0.004}px 0;
   padding: ${screenHeight * 0.015}px 0;
-  background-color: ${({transparent}) => (transparent ? '#fff' : '#3578f6')};
-  border-color: #3578f6;
+  background-color: ${({transparent, color}) =>
+    transparent ? '#fff' : color || '#3578f6'};
+  border-color: ${({color}) => color || '#3578f6'};
   border-width: 2px;
   border-radius: 8px;
 `;

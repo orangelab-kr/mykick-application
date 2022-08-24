@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import NaverMapView, {MapType} from 'react-native-nmap';
@@ -15,21 +16,21 @@ import {StickyController} from '../components/StickyController/StickyController'
 import {SwitchController} from '../components/SwitchController/SwitchController';
 import {TopBar} from '../components/TopBar/TopBar';
 import {useKickboard} from '../tools/kickboard';
+import {navigationRef} from '../tools/navigation';
 
 export const Control: React.FC = () => {
-  const kickboard = useKickboard({
-    secretKey: 'string',
-    macAddress: 'string',
-    serviceId: 'string',
-    characteristics: {
-      writeId: 'string',
-      readId: 'string',
-    },
-  });
+  const kickboard = useKickboard();
+
+  useEffect(() => {
+    AsyncStorage.getItem('realmykick-authkey').then(authkey => {
+      if (!authkey) return navigationRef.current?.navigate('Register');
+      kickboard.setAuthkey(JSON.parse(authkey));
+    });
+  }, []);
 
   useEffect(() => {
     kickboard.connect();
-  }, []);
+  }, [kickboard.credentials]);
 
   console.log(kickboard.power);
 

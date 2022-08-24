@@ -21,7 +21,7 @@ export interface KickboardCredentials {
   };
 }
 
-export const useKickboard = (credentials: KickboardCredentials) => {
+export const useKickboard = () => {
   const [power, setPower] = useState(false);
   const [light, setLight] = useState(false);
   const [batteryLock, setBatteryLock] = useState(false);
@@ -30,10 +30,18 @@ export const useKickboard = (credentials: KickboardCredentials) => {
   const [device, setDevice] = useState<Device>();
   const [token, setToken] = useState(_.times(4, () => 0x00));
   const [status, setStatus] = useState<KickboardStatus>('disconnected');
-  const secretKey = Buffer.from(credentials.secretKey).toJSON().data;
-  const cipher = new ModeOfOperation.ecb(secretKey);
+  const [credentials, setCredentials] = useState<KickboardCredentials>();
+  const [cipher, setCipher] = useState<ModeOfOperation.ModeOfOperationECB>();
+
+  const setAuthkey = (credentials: KickboardCredentials) => {
+    setCredentials(credentials);
+
+    const secretKey = Buffer.from(credentials.secretKey).toJSON().data;
+    setCipher(new ModeOfOperation.ecb(secretKey));
+  };
 
   const connect = async () => {
+    if (!credentials) return;
     setStatus('scanning');
     manager.startDeviceScan(
       [credentials.serviceId],
@@ -56,10 +64,10 @@ export const useKickboard = (credentials: KickboardCredentials) => {
   };
 
   const encrypt = (payload: number[]): string =>
-    Buffer.from(cipher.encrypt(payload)).toString('base64');
+    Buffer.from(cipher!.encrypt(payload)).toString('base64');
 
   const decrypt = (payload: string): number[] =>
-    Buffer.from(cipher.decrypt(Buffer.from(payload, 'base64'))).toJSON().data;
+    Buffer.from(cipher!.decrypt(Buffer.from(payload, 'base64'))).toJSON().data;
 
   const write = async (payload: number[]): Promise<void> => {
     if (!writer) return;
@@ -179,14 +187,13 @@ export const useKickboard = (credentials: KickboardCredentials) => {
   };
 
   const pair = async () => {
-    if (!device || status !== 'scanning') return;
+    if (!credentials || !device || status !== 'scanning') return;
     const {
       serviceId,
       characteristics: {writeId, readId},
     } = credentials;
 
     setStatus('connecting');
-    // await device.cancelConnection();
     await device.connect();
     console.log('Successfully connected to device.');
 
@@ -236,6 +243,8 @@ export const useKickboard = (credentials: KickboardCredentials) => {
   );
 
   return {
+    credentials,
+    setAuthkey,
     status,
     power,
     light,
