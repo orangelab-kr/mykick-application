@@ -8,6 +8,7 @@ import {navigationRef} from '../tools/navigation';
 
 export const Rent: React.FC = () => {
   const {params} = useRoute<RouteProp<RootNavigatorRouteParams, 'Rent'>>();
+  const path = params?.path || 'started/pricing';
   const onNavigationStateChange = (state: WebViewNavigation) => {
     if (!state.url.endsWith('/started')) return;
     navigationRef.current?.navigate('Start');
@@ -17,7 +18,7 @@ export const Rent: React.FC = () => {
     <SafeAreaView style={{flex: 1}}>
       <TopBar />
       <WebView
-        source={{uri: `https://my.hikick.kr/${params?.path}`}}
+        source={{uri: `https://my.hikick.kr/${path}`}}
         onNavigationStateChange={onNavigationStateChange}
         javascriptEnabled
         startInLoadingState
