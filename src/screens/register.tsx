@@ -89,7 +89,7 @@ const Description = styled(CommonText)`
 
 const TextArea = styled(TextInput)`
   margin: ${screenHeight * 0.01}px 0;
-  height: ${screenHeight * 0.28};
+  height: ${screenHeight * 0.28}px;
   font-size: ${screenWidth / 23}px;
   border-width: 2px;
   border-color: #3578f6;

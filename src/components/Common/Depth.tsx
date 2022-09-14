@@ -33,7 +33,7 @@ export const Depth: React.FC<DepthProps> = ({
 
 const Container = styled(TouchableOpacity)`
   height: ${screenHeight * 0.07}px;
-  padding-left: ${screenHeight * 0.035};
+  padding-left: ${screenHeight * 0.035}px;
   width: ${screenWidth}px;
   flex-direction: row;
   align-items: center;
