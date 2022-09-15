@@ -15,7 +15,12 @@ export const SwitchController: React.FC<SwitchControllerProps> = ({
   return (
     <SwitchContainer>
       {label && <SwitchText>{label}</SwitchText>}
-      <ResizedSwitch {...props} />
+      <ResizedSwitch
+        trackColor={{true: '#3578F6', false: '#FDFDFD'}}
+        style={{backgroundColor: '#FDFDFD'}}
+        ios_backgroundColor="#7D8286"
+        {...props}
+      />
     </SwitchContainer>
   );
 };

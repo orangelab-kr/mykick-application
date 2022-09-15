@@ -26,9 +26,11 @@ export const SpeedController: React.FC<SpeedControllerProps> = ({
           value={maxSpeed}
           style={{width: '100%', height: 45}}
           onValueChange={setMaxSpeed}
+          minimumTrackTintColor="#3578f6"
+          maximumTrackTintColor="#7D8286"
           minimumValue={5}
           maximumValue={25}
-          step={5}
+          step={1}
         />
       </SpeedCenterContainer>
       <SpeedMinMaxContainer>
