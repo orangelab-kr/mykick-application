@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {useEffect, useState} from 'react';
 import {BleManager, Characteristic, Device} from 'react-native-ble-plx';
 
-export const manager = new BleManager();
+export let manager = new BleManager();
 export type KickboardStatus =
   | 'scanning'
   | 'connecting'
@@ -22,10 +22,11 @@ export interface KickboardCredentials {
 }
 
 export const useKickboard = () => {
-  const [power, setPower] = useState(false);
-  const [light, setLight] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [power, setRawPower] = useState(false);
+  const [light, setRawLight] = useState(false);
   const [batterySOC, setBatterySOC] = useState(100);
-  const [batteryLock, setBatteryLock] = useState(false);
+  const [batteryLock, setRawBatteryLock] = useState(false);
   const [maxSpeed, setRawMaxSpeed] = useState(0);
   const [writer, setWriter] = useState<Characteristic>();
   const [reader, setReader] = useState<Characteristic>();
@@ -43,26 +44,30 @@ export const useKickboard = () => {
   };
 
   const connect = async () => {
-    if (!credentials || status === 'connected') return;
-    setStatus('scanning');
-    manager.startDeviceScan(
-      [credentials.serviceId],
-      {allowDuplicates: false},
-      (err, device) => {
-        if (err) throw err;
-        if (!device || !device.manufacturerData) return;
+    try {
+      if (!credentials || status === 'connected') return;
+      setStatus('scanning');
+      manager.startDeviceScan(
+        [credentials.serviceId],
+        {allowDuplicates: true},
+        (err, device) => {
+          if (err) throw err;
+          if (!device || !device.manufacturerData) return;
 
-        console.log(device.manufacturerData);
-        const macAddress = Buffer.from(device.manufacturerData, 'base64')
-          .reverse()
-          .toString('hex')
-          .toUpperCase();
+          const macAddress = Buffer.from(device.manufacturerData, 'base64')
+            .reverse()
+            .toString('hex')
+            .toUpperCase();
 
-        console.log(macAddress, credentials.macAddress);
-        if (macAddress !== credentials.macAddress) return;
-        setDevice(device);
-      },
-    );
+          if (macAddress !== credentials.macAddress) return;
+          manager.stopDeviceScan();
+          setDevice(device);
+        },
+      );
+    } catch (err) {
+      console.log(err);
+      setStatus('disconnected');
+    }
   };
 
   const encrypt = (payload: number[]): string =>
@@ -77,7 +82,7 @@ export const useKickboard = () => {
     payload.push(..._.times(margin, () => _.random(0, 255)));
     payload.push(...token);
 
-    console.log(payload);
+    console.log('Send:', payload);
     await writer.writeWithResponse(encrypt(payload));
   };
 
@@ -95,7 +100,7 @@ export const useKickboard = () => {
       const validate = (payload?: string | null) => {
         if (!payload) return;
         const decryptedPayload = decrypt(payload);
-        console.log(decryptedPayload);
+        console.log('Received:', decryptedPayload);
         for (let i = 0; i < responsePrefix.length; i++) {
           if (decryptedPayload[i] !== responsePrefix[i]) return;
         }
@@ -133,23 +138,37 @@ export const useKickboard = () => {
     setStatus('connected');
   };
 
-  const isPowerOn = () => powerRW([0x00]);
-  const setPowerOn = (power: boolean) => powerRW([0x01, power ? 0x01 : 0x00]);
-  const switchPowerOn = () => setPowerOn(!power);
-  const powerRW = async (payload: number[]) => {
+  const isPower = () => powerR();
+  const setPower = (power: boolean) => powerW([0x01, power ? 0x01 : 0x00]);
+  const switchPower = () => setPower(!power);
+  const powerW = async (payload: number[]) => {
     const power = await request({
       requestPayload: [0x61, 0x62, 0x31, ...payload],
       responsePrefix: [0x61, 0x62, 0x31],
       responseSize: 2,
     }).then(([, power]) => power === 0x01);
 
-    setPower(power);
+    console.log('Power:', power);
+    setRawPower(power);
     return power;
   };
 
-  const isLightOn = () => powerRW([0x00]);
-  const setLightOn = (light: boolean) => lightRW([0x01, light ? 0x01 : 0x00]);
-  const switchLightOn = () => setLightOn(!light);
+  const powerR = async () => {
+    const power = await request({
+      requestPayload: [0x61, 0x62, 0x26, 0x00],
+      responsePrefix: [0x61, 0x62, 0x26],
+      responseSize: 13,
+    }).then(([, a, b, c, d]) => a !== 0 || b !== 0 || c !== 0 || d !== 0);
+
+    console.log('Power:', power);
+    setRawPower(power);
+    return power;
+  };
+
+  const isLight = () => lightRW([0x00]);
+  const setLight = (light: boolean) =>
+    lightRW([0x05, light ? 0x01 : 0x00, 0x00, 0x00, 0x00, 0x00]);
+  const switchLight = () => setLight(!light);
   const lightRW = async (payload: number[]) => {
     const light = await request({
       requestPayload: [0x61, 0x62, 0x32, ...payload],
@@ -157,36 +176,50 @@ export const useKickboard = () => {
       responseSize: 2,
     }).then(([, light]) => light === 0x01);
 
-    setLight(light);
+    console.log('Light:', light);
+    setRawLight(light);
     return light;
   };
 
-  const isBatteryLocked = () => powerRW([0x00]);
-  const setBatteryLocked = (light: boolean) =>
-    batteryLockRW([0x01, light ? 0x01 : 0x00]);
-  const switchBatteryLock = () => setBatteryLock(!light);
+  const isBatteryLock = () => batteryLockRW([0x00]);
+  const setBatteryLock = (batteryLock: boolean) =>
+    batteryLockRW([0x01, batteryLock ? 0x00 : 0x01]);
+  const switchBatteryLock = () => setBatteryLock(!batteryLock);
   const batteryLockRW = async (payload: number[]) => {
     const batteryLock = await request({
-      requestPayload: [0x61, 0x62, 0x37, ...payload],
-      responsePrefix: [0x61, 0x62, 0x37],
+      requestPayload: [0x61, 0x62, -0x40, ...payload],
+      responsePrefix: [0x61, 0x62, -0x40],
       responseSize: 2,
-    }).then(([, batteryLock]) => batteryLock === 0x01);
+    }).then(([, batteryLock]) => batteryLock === 0x00);
 
-    setBatteryLock(batteryLock);
+    console.log('Battery Locked:', batteryLock);
+    setRawBatteryLock(batteryLock);
     return batteryLock;
   };
 
   const getMaxSpeed = async () => {
-    const maxSpeed = await settingsRW([0x00]).then(r => r[3]);
-    setRawMaxSpeed(maxSpeed);
-    return maxSpeed;
+    try {
+      setLoading(true);
+      const maxSpeed = await settingsRW([0x00]).then(r => r[3]);
+      console.log('Max Speed:', maxSpeed);
+
+      setRawMaxSpeed(maxSpeed);
+      return maxSpeed;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const setMaxSpeed = async (speed: number) => {
-    const settings = await settingsRW([0x00]);
-    settings[3] = speed;
-    await settingsRW([0x05, ...settings]);
-    setRawMaxSpeed(speed);
+    try {
+      setLoading(true);
+      const settings = await settingsRW([0x00]);
+      settings[3] = speed;
+      await settingsRW([0x05, ...settings]);
+      setRawMaxSpeed(speed);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const settingsRW = async (payload: number[]) =>
@@ -197,7 +230,6 @@ export const useKickboard = () => {
     });
 
   const getBatteryStatus = async () => {
-    console.log(reader, writer);
     const batterySOC = await request({
       requestPayload: [0x61, 0x62, 0x28, 0x00],
       responsePrefix: [0x61, 0x62, 0x28, 0x0c],
@@ -205,43 +237,51 @@ export const useKickboard = () => {
     }).then(r => r[3]);
 
     setBatterySOC(batterySOC);
-    console.log(batterySOC);
   };
 
   const pair = async () => {
     if (!credentials || !device || status !== 'scanning') return;
-    const {
-      serviceId,
-      characteristics: {writeId, readId},
-    } = credentials;
 
-    setStatus('connecting');
-    await device.connect();
-    console.log('Successfully connected to device.');
+    try {
+      setLoading(true);
+      const {
+        serviceId,
+        characteristics: {writeId, readId},
+      } = credentials;
 
-    await device.discoverAllServicesAndCharacteristics();
-    console.log('Successfully discover all services and characteristics.');
+      setStatus('connecting');
+      await device.connect();
+      console.log('Successfully connected to device.');
 
-    const services = await device.services();
-    const service = services.find(s => s.uuid === serviceId);
-    if (!service) return;
+      await device.discoverAllServicesAndCharacteristics();
+      console.log('Successfully discover all services and characteristics.');
 
-    const characteistics = await service.characteristics();
-    const writer = characteistics.find(c => c.uuid === writeId);
-    const reader = characteistics.find(c => c.uuid === readId);
+      const services = await device.services();
+      const service = services.find(s => s.uuid === serviceId);
+      if (!service) return;
 
-    if (!writer || !reader) return;
-    console.log('Successfully get writer and reader.');
+      const characteristics = await service.characteristics();
+      const writer = characteristics.find(c => c.uuid === writeId);
+      const reader = characteristics.find(c => c.uuid === readId);
 
-    setWriter(writer);
-    setReader(reader);
+      if (!writer || !reader) return;
+      console.log('Successfully get writer and reader.');
+
+      setWriter(writer);
+      setReader(reader);
+    } catch (err) {
+      console.log(err);
+      setStatus('disconnected');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onInit = async () => {
     await getBatteryStatus();
-    await isPowerOn();
-    await isLightOn();
-    await isBatteryLocked();
+    await isPower();
+    await isLight();
+    await isBatteryLock();
     await getMaxSpeed();
   };
 
@@ -261,12 +301,18 @@ export const useKickboard = () => {
     onInit();
   }, [status, device, reader, writer]);
 
+  useEffect(() => {
+    if (status === 'connected') return;
+    setLoading(true);
+  }, [status]);
+
   useEffect(
     () => device?.onDisconnected(() => setStatus('disconnected')).remove,
     [device],
   );
 
   return {
+    loading,
     credentials,
     setAuthkey,
     setMaxSpeed,
@@ -276,11 +322,11 @@ export const useKickboard = () => {
     batteryLock,
     batterySOC,
     maxSpeed,
-    setPowerOn,
-    switchPowerOn,
-    setLightOn,
-    switchLightOn,
-    setBatteryLocked,
+    setPower,
+    switchPower,
+    setLight,
+    switchLight,
+    setBatteryLock,
     switchBatteryLock,
     connect,
   };

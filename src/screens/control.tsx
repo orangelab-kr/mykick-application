@@ -59,20 +59,20 @@ export const Control: React.FC = () => {
           <CoreController>
             <SwitchController
               label="라이트"
-              disabled={kickboard.status !== 'connected'}
+              disabled={kickboard.loading || kickboard.power === false}
               value={kickboard.light}
               onChange={() => {
-                kickboard.switchLightOn();
+                kickboard.switchLight();
               }}
             />
             <PowerButton
-              onPress={kickboard.switchPowerOn}
+              onPress={kickboard.switchPower}
               color={kickboard.power ? '#3578F6' : '#153B54'}
-              disabled={kickboard.status !== 'connected'}
+              disabled={kickboard.loading}
             />
             <SwitchController
               label="배터리 잠금"
-              disabled={kickboard.status !== 'connected'}
+              disabled={kickboard.loading}
               value={kickboard.batteryLock}
               onChange={() => {
                 kickboard.switchBatteryLock();
@@ -82,7 +82,7 @@ export const Control: React.FC = () => {
           <SpeedController
             maxSpeed={kickboard.maxSpeed}
             setMaxSpeed={kickboard.setMaxSpeed}
-            disabled={kickboard.status !== 'connected'}
+            disabled={kickboard.loading}
           />
         </StickyController>
       </Container>
