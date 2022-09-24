@@ -1,6 +1,13 @@
+import {useNavigation} from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
-import React from 'react';
-import {SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  AppState,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {WithLocalSvg} from 'react-native-svg';
 import styled from 'styled-components/native';
 import Logo from '../assets/logo.svg';
@@ -9,9 +16,24 @@ import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
 
 export const Start: React.FC = () => {
+  const appState = useRef(AppState.currentState);
+  const animationRef = useRef<AnimatedLottieView>();
   const gotoRealmykick = () => navigationRef.current?.navigate('Register');
   const gotoRent = (path: string) => () =>
     navigationRef.current?.navigate('Rent', {path});
+
+  useEffect(
+    () =>
+      AppState.addEventListener('change', nextAppState => {
+        if (appState.current) {
+          const state = appState.current.match(/inactive|background/);
+          if (state && nextAppState === 'active') animationRef.current?.play();
+        }
+
+        appState.current = nextAppState;
+      }).remove,
+    [],
+  );
 
   return (
     <Container>
@@ -24,20 +46,21 @@ export const Start: React.FC = () => {
         autoPlay
         resizeMode="contain"
         source={require('../assets/lotties/64970-electric-scooter-baloon.json')}
+        ref={animationRef as any}
       />
       <BottomContainer>
         <ButtonContainer onPress={gotoRealmykick}>
           <ButtonText>리얼 마이킥 등록하기</ButtonText>
         </ButtonContainer>
-        <ButtonContainer transparent onPress={gotoRent('started/pricing')}>
+        {/* <ButtonContainer transparent onPress={gotoRent('started/pricing')}>
           <ButtonText transparent>장 · 단기 렌탈 신청하기</ButtonText>
-        </ButtonContainer>
-        <TransparentContainer onPress={gotoRent('auth')}>
+        </ButtonContainer> */}
+        {/* <TransparentContainer onPress={gotoRent('auth')}>
           <TransparentText>
             이미 <Text style={{fontWeight: '900'}}>마이킥</Text>을 가지고
             계신가요?
           </TransparentText>
-        </TransparentContainer>
+        </TransparentContainer> */}
       </BottomContainer>
     </Container>
   );
@@ -45,8 +68,8 @@ export const Start: React.FC = () => {
 
 const Container = styled(View)`
   position: relative;
-  padding: ${screenHeight * 0.04}px ${screenWidth * 0.08}px;
-  height: 100%;
+  padding: ${screenHeight * 0.07}px ${screenWidth * 0.08}px;
+  height: 98%;
   width: 100%;
 `;
 
@@ -69,7 +92,7 @@ const AnimationView = styled(AnimatedLottieView)`
 `;
 
 const BottomContainer = styled(View)`
-  margin: 0 ${screenWidth * 0.08}px;
+  margin: ${screenWidth * 0.02}px ${screenWidth * 0.08}px;
   position: absolute;
   bottom: 0;
   right: 0;

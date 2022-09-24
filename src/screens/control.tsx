@@ -46,6 +46,7 @@ export const Control: React.FC = () => {
           scaleBar={false}
           zoomControl={false}
           mapType={MapType.Basic}
+          showsMyLocationButton
           useTextureView
         />
         <StickyController>

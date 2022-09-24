@@ -28,12 +28,13 @@ export const TopBar: React.FC = () => {
 
   return (
     <TopContainer>
-      <MenuView
+      <TopBarLogo />
+      {/* <MenuView
         actions={actions}
         onPressAction={onAction}
         {...({children: <TopBarLogo />} as any)}
-      />
-      <TopBarSettingsButton onPress={() => AsyncStorage.clear()} />
+      /> */}
+      {/* <TopBarSettingsButton onPress={() => AsyncStorage.clear()} /> */}
     </TopContainer>
   );
 };

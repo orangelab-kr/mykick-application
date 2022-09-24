@@ -1,7 +1,13 @@
 import {Buffer} from '@craftzdog/react-native-buffer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  SafeAreaView,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import styled from 'styled-components/native';
 import {CommonText} from '../components/Common/CommonText';
 import {Depth} from '../components/Common/Depth';
@@ -55,6 +61,7 @@ export const Register: React.FC = () => {
           numberOfLines={3}
           onChangeText={setAuthkey}
           placeholder="인증키을 붙여넣기해주세요."
+          style={{height: '45%'}}
         />
         <ButtonContainer transparent onPress={openWhatIsAuthToken}>
           <ButtonText transparent>인증키가 무엇인가요?</ButtonText>

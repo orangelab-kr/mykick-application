@@ -10,7 +10,7 @@ export const TopBarLogo: React.FC = () => {
   return (
     <LogoButton>
       <WithLocalSvg width="48%" height={40} asset={Logo} />
-      <Icon name="expand-more" size={screenWidth / 15} color="#003c56" />
+      {/* <Icon name="expand-more" size={screenWidth / 15} color="#003c56" /> */}
     </LogoButton>
   );
 };
