@@ -26,7 +26,7 @@ const StickyContainer = styled(View)`
 const ControllerContainer = styled(View)`
   width: 87%;
   border-radius: 16px;
-  height: ${screenHeight * 0.4}px;
+  height: ${screenHeight * 0.33}px;
   margin-bottom: ${screenHeight * 0.13}px;
   padding: ${screenHeight * 0.03}px;
   background-color: #fff;
