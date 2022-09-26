@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {RootNavigatorRouteParams} from '../models/navigation';
 import {Control} from '../screens/control';
+import { Permission } from '../screens/permission';
 import {Register} from '../screens/register';
 import {Rent} from '../screens/rent';
 import {Splash} from '../screens/splash';
@@ -17,6 +18,11 @@ export const RootNavigator: React.FC = () => {
       <Stack.Screen
         name="Splash"
         component={Splash}
+        options={{gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="Permission"
+        component={Permission}
         options={{gestureEnabled: false}}
       />
       <Stack.Screen

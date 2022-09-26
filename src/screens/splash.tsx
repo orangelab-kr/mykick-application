@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import CodePush, {DownloadProgress} from 'react-native-code-push';
+import {checkMultiple} from 'react-native-permissions';
 import {Bar} from 'react-native-progress';
 import {WithLocalSvg} from 'react-native-svg';
 import styled from 'styled-components/native';
@@ -10,6 +11,7 @@ import Logo from '../assets/logo.svg';
 import {CommonText} from '../components/Common/CommonText';
 import {navigationRef} from '../tools/navigation';
 import {screenHeight, screenWidth} from '../tools/screenSize';
+import {requestPermissions} from './permission';
 
 type StatusType =
   | 'starting'
@@ -75,17 +77,12 @@ export const Splash: React.FC = () => {
   };
 
   const onReady = async () => {
-    // const [permissions, tryRequestNotification] = await Promise.all([
-    //   checkMultiple(requiredPermissions),
-    //   checkNotifications().then(r => r.status === 'denied'),
-    // ]);
+    const permissions = await checkMultiple(requestPermissions);
+    const isAllow = (p: string) => !['granted', 'unavailable'].includes(p);
+    if (Object.values(permissions).find(isAllow)) {
+      return navigationRef.current?.navigate('Permission');
+    }
 
-    // const isAllow = (p: string) => !['granted', 'unavailable'].includes(p);
-    // if (Object.values(permissions).find(isAllow) || tryRequestNotification) {
-    //   return navigationRef.current?.navigate('Permission');
-    // }
-
-    // if (user === null) return navigationRef.current?.navigate('Start');
     const authkey = await AsyncStorage.getItem('realmykick-authkey');
     navigationRef.current?.navigate(authkey ? 'Control' : 'Start');
   };
