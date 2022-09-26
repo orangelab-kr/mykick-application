@@ -47,6 +47,12 @@ export const useKickboard = () => {
     try {
       if (!credentials || status === 'connected') return;
       setStatus('scanning');
+      setTimeout(() => {
+        if (device) return;
+        manager.stopDeviceScan();
+        setStatus('disconnected');
+      }, 5000);
+
       manager.startDeviceScan(
         [credentials.serviceId],
         {allowDuplicates: true},
@@ -304,6 +310,11 @@ export const useKickboard = () => {
   useEffect(() => {
     if (status === 'connected') return;
     setLoading(true);
+  }, [status]);
+
+  useEffect(() => {
+    if (status !== 'disconnected') return;
+    setTimeout(() => connect(), 5000);
   }, [status]);
 
   useEffect(
