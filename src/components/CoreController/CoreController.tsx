@@ -14,6 +14,5 @@ export const CoreController: React.FC<CoreControllerProps> = ({children}) => {
 const CoreControllerContainer = styled(View)`
   flex-direction: row;
   align-items: center;
-  margin-top: ${screenHeight * 0.02}px;
   justify-content: space-around;
 `;

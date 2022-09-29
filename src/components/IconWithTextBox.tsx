@@ -15,7 +15,7 @@ export const IconWithTextBox: React.FC<IconWithMessageProps> = ({
 }) => (
   <Container>
     <IconContainer>
-      <Icon name={icon} size={32} />
+      <Icon name={icon} size={32} color="#000" />
     </IconContainer>
     <TextContainer>{children}</TextContainer>
   </Container>

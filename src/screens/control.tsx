@@ -22,6 +22,7 @@ import {SwitchController} from '../components/SwitchController/SwitchController'
 import {TopBar} from '../components/TopBar/TopBar';
 import {KickboardStatus, useKickboard} from '../tools/kickboard';
 import {navigationRef} from '../tools/navigation';
+import {screenHeight, screenWidth} from '../tools/screenSize';
 import {useGeolocation} from '../tools/useGeolocation';
 
 const marker = require('../assets/pin-ride.png');
@@ -69,9 +70,9 @@ export const Control: React.FC = () => {
   }, [kickboard.status]);
 
   useEffect(() => {
-    mapRef.current?.setLocationTrackingMode(TrackingMode.Follow);
     mapRef.current?.setLayerGroupEnabled(LayerGroup.LAYER_GROUP_BUILDING, true);
     mapRef.current?.setLayerGroupEnabled(LayerGroup.LAYER_GROUP_BICYCLE, true);
+    mapRef.current?.setLocationTrackingMode(TrackingMode.Follow);
   }, []);
 
   if (!coords) return <></>;
@@ -93,14 +94,20 @@ export const Control: React.FC = () => {
         <NaverMapView
           ref={mapRef}
           style={{height: '100%', width: '100%'}}
-          compass={false}
-          scaleBar={false}
-          zoomControl={false}
+          compass
+          scaleBar
+          zoomControl
+          zoomGesturesEnabled
           mapType={MapType.Basic}
           onCameraChange={setCamera}
           center={camera as any}
           showsMyLocationButton
-          useTextureView>
+          useTextureView
+          mapPadding={{
+            bottom: screenHeight * 0.47,
+            left: screenWidth * 0.03,
+            right: screenWidth * 0.03,
+          }}>
           {kickboard.status === 'connected' ? (
             <Marker width={35} height={50} image={marker} coordinate={coords} />
           ) : location ? (
