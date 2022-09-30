@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>16</string>
+	<string>17</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>킥보드 잠금해제와 통신할 때 사용합니다.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>

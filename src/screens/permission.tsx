@@ -12,7 +12,6 @@ import {
   openSettings,
   PERMISSIONS,
   requestMultiple,
-  requestNotifications,
 } from 'react-native-permissions';
 import styled from 'styled-components/native';
 import {CommonText} from '../components/Common/CommonText';

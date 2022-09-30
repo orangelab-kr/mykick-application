@@ -2,7 +2,15 @@ import {Buffer} from '@craftzdog/react-native-buffer';
 import {ModeOfOperation} from 'aes-js';
 import _ from 'lodash';
 import {useEffect, useState} from 'react';
-import {BleManager, Characteristic, Device} from 'react-native-ble-plx';
+import {Alert} from 'react-native';
+import {
+  BleManager,
+  Characteristic,
+  Device,
+  State,
+  Subscription,
+} from 'react-native-ble-plx';
+import {navigationRef} from './navigation';
 
 export let manager = new BleManager();
 export type KickboardStatus =
@@ -44,6 +52,31 @@ export const useKickboard = () => {
   };
 
   const connect = async () => {
+    const state = await manager.state();
+    console.log('현재 상태', state);
+    if (state === State.PoweredOn) return find();
+
+    switch (state) {
+      case State.PoweredOff:
+        Alert.alert('블루투스', '통신을 위해서 블루투스를 켜주세요.');
+        break;
+      case State.Unsupported:
+        Alert.alert(
+          '지원하지 않는 기기',
+          '해당 기기에서 블루투스를 사용할 수 없습니다.',
+        );
+        break;
+      case State.Unauthorized:
+        navigationRef.current?.navigate('Permission');
+        break;
+      default:
+        break;
+    }
+
+    setTimeout(connect, 1000);
+  };
+
+  const find = async () => {
     try {
       if (!credentials || status === 'connected') return;
       setStatus('scanning');
@@ -193,8 +226,8 @@ export const useKickboard = () => {
   const switchBatteryLock = () => setBatteryLock(!batteryLock);
   const batteryLockRW = async (payload: number[]) => {
     const batteryLock = await request({
-      requestPayload: [0x61, 0x62, -0x40, ...payload],
-      responsePrefix: [0x61, 0x62, -0x40],
+      requestPayload: [0x61, 0x62, 0x37, ...payload],
+      responsePrefix: [0x61, 0x62, 0x37],
       responseSize: 2,
     }).then(([, batteryLock]) => batteryLock === 0x00);
 
