@@ -18,7 +18,7 @@ export const PowerButton: React.FC<PowerButtonProps> = ({color, ...props}) => {
 
 const PowerButtonContainer = styled(TouchableOpacity)`
   padding: ${screenWidth * 0.05}px;
-  border-radius: 150px;
+  border-radius: ${screenWidth}px;
   background-color: #fff;
   shadow-color: #000;
   shadow-opacity: 0.2;

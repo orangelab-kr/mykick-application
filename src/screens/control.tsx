@@ -70,12 +70,12 @@ export const Control: React.FC = () => {
   }, [kickboard.status]);
 
   useEffect(() => {
+    if (!mapRef.current) return;
     mapRef.current?.setLayerGroupEnabled(LayerGroup.LAYER_GROUP_BUILDING, true);
     mapRef.current?.setLayerGroupEnabled(LayerGroup.LAYER_GROUP_BICYCLE, true);
     mapRef.current?.setLocationTrackingMode(TrackingMode.Follow);
-  }, []);
+  }, [mapRef.current]);
 
-  if (!coords) return <></>;
   return (
     <SafeAreaView>
       <TopBar />
@@ -98,6 +98,7 @@ export const Control: React.FC = () => {
           scaleBar
           zoomControl
           zoomGesturesEnabled
+          defaultZoomLevel={20}
           mapType={MapType.Basic}
           onCameraChange={setCamera}
           center={camera as any}
@@ -108,7 +109,7 @@ export const Control: React.FC = () => {
             left: screenWidth * 0.03,
             right: screenWidth * 0.03,
           }}>
-          {kickboard.status === 'connected' ? (
+          {coords && kickboard.status === 'connected' ? (
             <Marker width={35} height={50} image={marker} coordinate={coords} />
           ) : location ? (
             <Marker

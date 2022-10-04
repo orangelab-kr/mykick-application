@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import styled from 'styled-components/native';
-import {screenHeight} from '../../tools/screenSize';
+import {screenHeight, screenWidth} from '../../tools/screenSize';
 
 export interface ControllerProps {
   children: React.ReactNode;
@@ -25,9 +25,15 @@ const StickyContainer = styled(View)`
 
 const ControllerContainer = styled(View)`
   width: 87%;
-  border-radius: 16px;
-  height: ${screenHeight * 0.34}px;
+  justify-content: center;
+  border-radius: ${screenWidth / 14}px;
+  height: ${screenHeight * 0.33}px;
   margin-bottom: ${screenHeight * 0.18}px;
   padding: ${screenHeight * 0.03}px;
   background-color: #fff;
+  shadow-color: #000;
+  shadow-opacity: 0.3;
+  shadow-offset: {width: 5px, height: 5px};
+  shadow-radius: 13px;
+  elevation: 21;
 `;
